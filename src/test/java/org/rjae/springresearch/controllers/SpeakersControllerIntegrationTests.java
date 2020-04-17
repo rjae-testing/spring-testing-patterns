@@ -15,16 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = SpringResearchApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SpeakersControllerIntegrationTests {
-    @LocalServerPort
-    private int itsPort;
     @Autowired
     private TestRestTemplate itsClient;
-
-    @Test
-    void listMustReturnEmptySpeakersWhenSpeakersIsEmpty() {
-        String url = String.format("http://localhost:%d/api/v1/speakers", itsPort);
-        assertEquals(0, itsClient.getForObject(url, Speaker[].class).length);
-    }
+    @LocalServerPort
+    private int itsPort;
 
     @Test
     void createMustAddSpeakerToSpeakers() {
@@ -51,12 +45,18 @@ public class SpeakersControllerIntegrationTests {
     }
 
     @Test
+    void listMustReturnEmptySpeakersWhenSpeakersIsEmpty() {
+        String url = String.format("http://localhost:%d/api/v1/speakers", itsPort);
+        assertEquals(0, itsClient.getForObject(url, Speaker[].class).length);
+    }
+
+    @Test
     void updateMustUpdateSpeakerInSpeakers() {
         String url = String.format("http://localhost:%d/api/v1/speakers", itsPort);
         Speaker expected = itsClient.postForObject(url, new Speaker("Bob", "Smith", "Tester", "Test", "Bob tests stuff"), Speaker.class);
         Speaker[] speakers = itsClient.getForObject(url, Speaker[].class);
         Arrays.stream(speakers).filter(x -> x.getId().equals(expected.getId())).findFirst().orElseThrow();
-        expected.setPhoto(new byte[] {(byte) 4, (byte) 3});
+        expected.setBio("Bob tests");
         itsClient.put(String.format("%s/%d", url, expected.getId()), expected);
         Speaker actual = itsClient.getForObject(String.format("%s/%d", url, expected.getId()), Speaker.class);
         assertEquals(expected.getId(), actual.getId());

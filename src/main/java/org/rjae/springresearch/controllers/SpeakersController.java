@@ -18,17 +18,6 @@ public class SpeakersController {
         this.itsRepository = itsRepository;
     }
 
-    @GetMapping
-    public List<Speaker> list() {
-        return itsRepository.findAll();
-    }
-
-    @GetMapping
-    @RequestMapping("{id}")
-    public Speaker get(@PathVariable Long id) {
-        return itsRepository.getOne(id);
-    }
-
     @PostMapping
     public Speaker create(@RequestBody Speaker speaker) {
         return itsRepository.saveAndFlush(speaker);
@@ -37,6 +26,17 @@ public class SpeakersController {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Long id) {
         itsRepository.deleteById(id);
+    }
+
+    @GetMapping
+    @RequestMapping("{id}")
+    public Speaker get(@PathVariable Long id) {
+        return itsRepository.getOne(id);
+    }
+
+    @GetMapping
+    public List<Speaker> list() {
+        return itsRepository.findAll();
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)

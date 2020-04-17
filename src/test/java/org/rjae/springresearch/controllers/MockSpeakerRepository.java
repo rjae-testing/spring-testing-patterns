@@ -24,33 +24,13 @@ public class MockSpeakerRepository implements SpeakerRepository {
     }
 
     @Override
-    public List<Speaker> findAll() {
-        return getRepository().findAll();
-    }
-
-    @Override
-    public List<Speaker> findAll(Sort sort) {
-        return getRepository().findAll(sort);
-    }
-
-    @Override
-    public Page<Speaker> findAll(Pageable pageable) {
-        return getRepository().findAll(pageable);
-    }
-
-    @Override
-    public List<Speaker> findAllById(Iterable<Long> iterable) {
-        return getRepository().findAllById(iterable);
-    }
-
-    @Override
     public long count() {
         return getRepository().count();
     }
 
     @Override
-    public void deleteById(Long aLong) {
-        getRepository().deleteById(aLong);
+    public <S extends Speaker> long count(Example<S> example) {
+        return getRepository().count(example);
     }
 
     @Override
@@ -69,33 +49,13 @@ public class MockSpeakerRepository implements SpeakerRepository {
     }
 
     @Override
-    public <S extends Speaker> S save(S s) {
-        return getRepository().save(s);
+    public void deleteAllInBatch() {
+        getRepository().deleteAllInBatch();
     }
 
     @Override
-    public <S extends Speaker> List<S> saveAll(Iterable<S> iterable) {
-        return getRepository().saveAll(iterable);
-    }
-
-    @Override
-    public Optional<Speaker> findById(Long aLong) {
-        return getRepository().findById(aLong);
-    }
-
-    @Override
-    public boolean existsById(Long aLong) {
-        return getRepository().existsById(aLong);
-    }
-
-    @Override
-    public void flush() {
-        getRepository().flush();
-    }
-
-    @Override
-    public <S extends Speaker> S saveAndFlush(S s) {
-        return getRepository().saveAndFlush(s);
+    public void deleteById(Long aLong) {
+        getRepository().deleteById(aLong);
     }
 
     @Override
@@ -104,18 +64,28 @@ public class MockSpeakerRepository implements SpeakerRepository {
     }
 
     @Override
-    public void deleteAllInBatch() {
-        getRepository().deleteAllInBatch();
+    public <S extends Speaker> boolean exists(Example<S> example) {
+        return getRepository().exists(example);
     }
 
     @Override
-    public Speaker getOne(Long aLong) {
-        return getRepository().getOne(aLong);
+    public boolean existsById(Long aLong) {
+        return getRepository().existsById(aLong);
     }
 
     @Override
-    public <S extends Speaker> Optional<S> findOne(Example<S> example) {
-        return getRepository().findOne(example);
+    public List<Speaker> findAll() {
+        return getRepository().findAll();
+    }
+
+    @Override
+    public List<Speaker> findAll(Sort sort) {
+        return getRepository().findAll(sort);
+    }
+
+    @Override
+    public Page<Speaker> findAll(Pageable pageable) {
+        return getRepository().findAll(pageable);
     }
 
     @Override
@@ -134,13 +104,43 @@ public class MockSpeakerRepository implements SpeakerRepository {
     }
 
     @Override
-    public <S extends Speaker> long count(Example<S> example) {
-        return getRepository().count(example);
+    public List<Speaker> findAllById(Iterable<Long> iterable) {
+        return getRepository().findAllById(iterable);
     }
 
     @Override
-    public <S extends Speaker> boolean exists(Example<S> example) {
-        return getRepository().exists(example);
+    public Optional<Speaker> findById(Long aLong) {
+        return getRepository().findById(aLong);
+    }
+
+    @Override
+    public <S extends Speaker> Optional<S> findOne(Example<S> example) {
+        return getRepository().findOne(example);
+    }
+
+    @Override
+    public void flush() {
+        getRepository().flush();
+    }
+
+    @Override
+    public Speaker getOne(Long aLong) {
+        return getRepository().getOne(aLong);
+    }
+
+    @Override
+    public <S extends Speaker> S save(S s) {
+        return getRepository().save(s);
+    }
+
+    @Override
+    public <S extends Speaker> List<S> saveAll(Iterable<S> iterable) {
+        return getRepository().saveAll(iterable);
+    }
+
+    @Override
+    public <S extends Speaker> S saveAndFlush(S s) {
+        return getRepository().saveAndFlush(s);
     }
 
     protected JpaRepository<Speaker, Long> getRepository() {

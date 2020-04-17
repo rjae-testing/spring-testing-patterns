@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = SpringResearchApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SessionsControllerIntegrationTests {
-    @LocalServerPort
-    private int itsPort;
     @Autowired
     private TestRestTemplate itsClient;
+    @LocalServerPort
+    private int itsPort;
 
     @Test
     void createMustAddSessionToSessions() {

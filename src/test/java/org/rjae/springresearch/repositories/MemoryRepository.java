@@ -16,39 +16,13 @@ public class MemoryRepository<Entity, Key> implements JpaRepository<Entity, Key>
     private final HashMap<Key, Entity> itsStorage = new HashMap<>();
 
     @Override
-    public List<Entity> findAll() {
-        return new ArrayList<>(itsStorage.values());
-    }
-
-    @Override
-    public List<Entity> findAll(Sort sort) {
-        return findAll();
-    }
-
-    @Override
-    public Page<Entity> findAll(Pageable pageable) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<Entity> findAllById(Iterable<Key> iterable) {
-        ArrayList<Entity> result = new ArrayList<>();
-        for (Key k : iterable) {
-            if (itsStorage.containsKey(k)) {
-                result.add(itsStorage.get(k));
-            }
-        }
-        return result;
-    }
-
-    @Override
     public long count() {
         return itsStorage.size();
     }
 
     @Override
-    public void deleteById(Key key) {
-        itsStorage.remove(key);
+    public <S extends Entity> long count(Example<S> example) {
+        return findAll(example).size();
     }
 
     @Override
@@ -69,37 +43,13 @@ public class MemoryRepository<Entity, Key> implements JpaRepository<Entity, Key>
     }
 
     @Override
-    public <S extends Entity> S save(S s) {
-        itsStorage.put(getKey(s), s);
-        return s;
+    public void deleteAllInBatch() {
+        deleteAll();
     }
 
     @Override
-    public <S extends Entity> List<S> saveAll(Iterable<S> iterable) {
-        ArrayList<S> saved = new ArrayList<>();
-        for (S item : iterable) {
-            saved.add(save(item));
-        }
-        return saved;
-    }
-
-    @Override
-    public Optional<Entity> findById(Key key) {
-        return itsStorage.containsKey(key) ? Optional.of(itsStorage.get(key)) : Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(Key key) {
-        return itsStorage.containsKey(key);
-    }
-
-    @Override
-    public void flush() {
-    }
-
-    @Override
-    public <S extends Entity> S saveAndFlush(S s) {
-        return save(s);
+    public void deleteById(Key key) {
+        itsStorage.remove(key);
     }
 
     @Override
@@ -110,18 +60,28 @@ public class MemoryRepository<Entity, Key> implements JpaRepository<Entity, Key>
     }
 
     @Override
-    public void deleteAllInBatch() {
-        deleteAll();
+    public <S extends Entity> boolean exists(Example<S> example) {
+        return existsById(getKey(example.getProbe()));
     }
 
     @Override
-    public Entity getOne(Key key) {
-        return itsStorage.get(key);
+    public boolean existsById(Key key) {
+        return itsStorage.containsKey(key);
     }
 
     @Override
-    public <S extends Entity> Optional<S> findOne(Example<S> example) {
-        return (Optional<S>) findById(getKey(example.getProbe()));
+    public List<Entity> findAll() {
+        return new ArrayList<>(itsStorage.values());
+    }
+
+    @Override
+    public List<Entity> findAll(Sort sort) {
+        return findAll();
+    }
+
+    @Override
+    public Page<Entity> findAll(Pageable pageable) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -141,13 +101,59 @@ public class MemoryRepository<Entity, Key> implements JpaRepository<Entity, Key>
     }
 
     @Override
-    public <S extends Entity> long count(Example<S> example) {
-        return findAll(example).size();
+    public List<Entity> findAllById(Iterable<Key> iterable) {
+        ArrayList<Entity> result = new ArrayList<>();
+        for (Key k : iterable) {
+            if (itsStorage.containsKey(k)) {
+                result.add(itsStorage.get(k));
+            }
+        }
+        return result;
     }
 
     @Override
-    public <S extends Entity> boolean exists(Example<S> example) {
-        return existsById(getKey(example.getProbe()));
+    public Optional<Entity> findById(Key key) {
+        return itsStorage.containsKey(key) ? Optional.of(itsStorage.get(key)) : Optional.empty();
+    }
+
+    @Override
+    public <S extends Entity> Optional<S> findOne(Example<S> example) {
+        return (Optional<S>) findById(getKey(example.getProbe()));
+    }
+
+    @Override
+    public void flush() {
+    }
+
+    @Override
+    public Entity getOne(Key key) {
+        return itsStorage.get(key);
+    }
+
+    @Override
+    public <S extends Entity> S save(S s) {
+        itsStorage.put(getKey(s), s);
+        return s;
+    }
+
+    @Override
+    public <S extends Entity> List<S> saveAll(Iterable<S> iterable) {
+        ArrayList<S> saved = new ArrayList<>();
+        for (S item : iterable) {
+            saved.add(save(item));
+        }
+        return saved;
+    }
+
+    @Override
+    public <S extends Entity> S saveAndFlush(S s) {
+        return save(s);
+    }
+
+    protected Field getIdField(Entity entity) {
+        Field field = Arrays.stream(entity.getClass().getDeclaredFields()).filter(x -> x.isAnnotationPresent(Id.class)).findFirst().orElseThrow();
+        field.setAccessible(true);
+        return field;
     }
 
     protected Key getKey(Entity entity) {
@@ -156,11 +162,5 @@ public class MemoryRepository<Entity, Key> implements JpaRepository<Entity, Key>
         } catch (IllegalAccessException ignored) {
             return null;
         }
-    }
-
-    protected Field getIdField(Entity entity) {
-        Field field = Arrays.stream(entity.getClass().getDeclaredFields()).filter(x -> x.isAnnotationPresent(Id.class)).findFirst().orElseThrow();
-        field.setAccessible(true);
-        return field;
     }
 }

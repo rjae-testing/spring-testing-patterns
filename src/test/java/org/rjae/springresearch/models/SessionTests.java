@@ -1,11 +1,20 @@
 package org.rjae.springresearch.models;
 
 import org.junit.jupiter.api.Test;
-import org.rjae.springresearch.models.Session;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SessionTests {
+    @Test
+    void setDescriptionMustSetDescription() {
+        Session session = new Session();
+        session.setDescription("Meet Bob");
+        assertEquals("Meet Bob", session.getDescription());
+    }
+
     @Test
     void setIdMustSetId() {
         Session session = new Session();
@@ -28,9 +37,11 @@ public class SessionTests {
     }
 
     @Test
-    void setDescriptionMustSetDescription() {
+    void setSpeakersMustSetSpeakers() {
         Session session = new Session();
-        session.setDescription("Meet Bob");
-        assertEquals("Meet Bob", session.getDescription());
+        Speaker speaker = new Speaker("Bob", "Smith", "Tester", "Testco", "Bob tests stuff");
+        speaker.setId(1L);
+        session.setSpeakers(List.of(speaker));
+        assertTrue(session.getSpeakers().stream().anyMatch(x -> x.getId() == 1L));
     }
 }
