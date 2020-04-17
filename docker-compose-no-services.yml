@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:10.11
+    ports: 
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "80:80"
+      - "5050:5050"
