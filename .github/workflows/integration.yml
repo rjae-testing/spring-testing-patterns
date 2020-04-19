@@ -1,0 +1,34 @@
+name: Integration
+
+on:
+  push:
+    branches:
+    - '**'
+    - '!master'
+  pull_request:
+    branches:
+    - '**'
+    - '!master'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Build
+      run: mvn clean compile
+    - name: Unit Test
+      run: mvn test
+    - name: Mutation Test
+      run: mvn org.pitest:pitest-maven:mutationCoverage
+    - name: Upload
+      uses: actions/upload-artifact@v1
+      with:
+        name: Mutation
+        path: target/pit-reports
